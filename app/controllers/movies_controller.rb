@@ -1,4 +1,5 @@
 class MoviesController < ApplicationController
+  # enable :sessions
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -25,24 +26,36 @@ class MoviesController < ApplicationController
     #   @ratings_to_show.append('R')
     # end
 
-    if params[:ratings]
-      @ratings_to_show = params[:ratings].keys
+    if session[:ratings]
+      @ratings_to_show = session[:ratings].keys
       @movies = Movie.where(rating: @ratings_to_show)
-    else
-      #if no checkboxes, then show everything
-      @ratings_to_show = @all_ratings
-      @movies = Movie.all
+    else 
+      if params[:ratings]
+        @ratings_to_show = params[:ratings].keys
+        @movies = Movie.where(rating: @ratings_to_show)
+      else
+        #if no checkboxes, then show everything
+        @ratings_to_show = @all_ratings
+        @movies = Movie.all
+      end
     end 
 
-    @sort = params[:sort_by]
-
-    if @sort 
-      @movies = Movie.order(@sort)
+    if session[:sort_by]
+      @sort = session[:sort_by]
+      @movies = @movies.order(@sort)
     else 
-      #include without sort
-      @movies = Movie.all
+      @sort = params[:sort_by]
+      if @sort 
+        @movies = @movies.order(@sort)
+      end
+      # else 
+      #   #don't do anything - this preserves the filter
+      # end
     end
     
+    #log the ratings and sort_by for next time
+    session[:ratings] = params[:ratings]
+    session[:sort_by] = params[:sort_by]
     
   end
 
