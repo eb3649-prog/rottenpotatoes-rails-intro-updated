@@ -12,20 +12,28 @@ class MoviesController < ApplicationController
     # puts "test"
     # puts params[:ratings]
     @ratings_to_show = []
-    if params[:ratings]['G']
-      @ratings_to_show.append('G')
-    end
-    if params[:ratings]['PG']
-      @ratings_to_show.append('PG')
-    end
-    if params[:ratings]['PG-13']
-      @ratings_to_show.append('PG-13')
-    end
-    if params[:ratings]['R']
-      @ratings_to_show.append('R')
-    end
+    # if params[:ratings]['G']
+    #   @ratings_to_show.append('G')
+    # end
+    # if params[:ratings]['PG']
+    #   @ratings_to_show.append('PG')
+    # end
+    # if params[:ratings]['PG-13']
+    #   @ratings_to_show.append('PG-13')
+    # end
+    # if params[:ratings]['R']
+    #   @ratings_to_show.append('R')
+    # end
 
-    @movies = Movie.with_ratings(@ratings_to_show)
+    if params[:ratings]
+      @ratings_to_show = params[:ratings].keys
+      @movies = Movie.where(rating: @ratings_to_show)
+    else
+      #if no checkboxes, then show everything
+      @ratings_to_show = @all_ratings
+      @movies = Movie.all
+    end 
+    
   end
 
   def new
