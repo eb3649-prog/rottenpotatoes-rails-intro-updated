@@ -26,33 +26,30 @@ class MoviesController < ApplicationController
     #   @ratings_to_show.append('R')
     # end
 
+    #save the action for the very end
     if session[:ratings]
       @ratings_to_show = session[:ratings].keys
-      @movies = Movie.where(rating: @ratings_to_show)
     else 
       if params[:ratings]
         @ratings_to_show = params[:ratings].keys
-        @movies = Movie.where(rating: @ratings_to_show)
       else
         #if no checkboxes, then show everything
         @ratings_to_show = @all_ratings
-        @movies = Movie.all
       end
     end 
 
+    @movies = Movie.where(rating: @ratings_to_show)
+
     if session[:sort_by]
       @sort = session[:sort_by]
-      @movies = @movies.order(@sort)
     else 
       @sort = params[:sort_by]
-      if @sort 
-        @movies = @movies.order(@sort)
-      end
       # else 
       #   #don't do anything - this preserves the filter
       # end
     end
-    
+
+    @movies = @movies.order(@sort)
     #log the ratings and sort_by for next time
     session[:ratings] = params[:ratings]
     session[:sort_by] = params[:sort_by]
