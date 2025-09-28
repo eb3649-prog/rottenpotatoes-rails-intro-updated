@@ -26,6 +26,11 @@ class MoviesController < ApplicationController
     #   @ratings_to_show.append('R')
     # end
 
+    if params[:ratings].nil? && params[:sort_by].nil?
+      # puts "there are no params"
+      session.clear
+    end
+
     #save the action for the very end
     if session[:ratings]
       @ratings_to_show = session[:ratings].keys
