@@ -1,4 +1,5 @@
 class MoviesController < ApplicationController
+  # enable :sessions
 
   def show
     id = params[:id] # retrieve movie ID from URI route
@@ -7,7 +8,57 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @all_ratings = Movie.all_ratings
+
+    # puts "test"
+    # puts params[:ratings]
+    @ratings_to_show = []
+    # if params[:ratings]['G']
+    #   @ratings_to_show.append('G')
+    # end
+    # if params[:ratings]['PG']
+    #   @ratings_to_show.append('PG')
+    # end
+    # if params[:ratings]['PG-13']
+    #   @ratings_to_show.append('PG-13')
+    # end
+    # if params[:ratings]['R']
+    #   @ratings_to_show.append('R')
+    # end
+
+    #save the action for the very end
+    if session[:ratings]
+      @ratings_to_show = session[:ratings].keys
+      session[:ratings] = @ratings_to_show
+    else 
+      if params[:ratings]
+        @ratings_to_show = params[:ratings].keys
+        session[:ratings] = @ratings_to_show
+      else
+        #if no checkboxes, then show everything
+        @ratings_to_show = @all_ratings
+      end
+    end 
+
+    @movies = Movie.where(rating: @ratings_to_show)
+
+    if session[:sort_by]
+      @sort = session[:sort_by]
+      # immediately update, don't wait until refresh
+      session[:sort_by] = @sort
+    else 
+      @sort = params[:sort_by]
+      session[:sort_by] = @sort
+      # else 
+      #   #don't do anything - this preserves the filter
+      # end
+    end
+
+    @movies = @movies.order(@sort)
+    #log the ratings and sort_by for next time
+    session[:ratings] = params[:ratings]
+    session[:sort_by] = params[:sort_by]
+    
   end
 
   def new
