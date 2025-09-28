@@ -33,6 +33,16 @@ class MoviesController < ApplicationController
       @ratings_to_show = @all_ratings
       @movies = Movie.all
     end 
+
+    @sort = params[:sort_by]
+
+    if @sort 
+      @movies = Movie.order(@sort)
+    else 
+      #include without sort
+      @movies = Movie.all
+    end
+    
     
   end
 
