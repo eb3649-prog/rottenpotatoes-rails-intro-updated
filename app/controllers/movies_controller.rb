@@ -32,12 +32,12 @@ class MoviesController < ApplicationController
     end
 
     #save the action for the very end
-    if session[:ratings]
-      @ratings_to_show = session[:ratings].keys
+    if params[:ratings]
+      @ratings_to_show = params[:ratings].keys
       session[:ratings] = @ratings_to_show
     else 
-      if params[:ratings]
-        @ratings_to_show = params[:ratings].keys
+      if session[:ratings]
+        @ratings_to_show = session[:ratings].keys
         session[:ratings] = @ratings_to_show
       else
         #if no checkboxes, then show everything
@@ -48,17 +48,19 @@ class MoviesController < ApplicationController
 
     @movies = Movie.where(rating: @ratings_to_show)
 
-    if session[:sort_by]
-      @sort = session[:sort_by]
+    if params[:sort_by]
+      @sort = params[:sort_by]
       # immediately update, don't wait until refresh
       session[:sort_by] = @sort
     else 
-      @sort = params[:sort_by]
-      #unnecessary
-      # session[:sort_by] = @sort 
-      # else 
-      #   #don't do anything - this preserves the filter
-      # end
+      if session[:sort_by]
+        @sort = session[:sort_by]
+        #unnecessary
+        # session[:sort_by] = @sort 
+        # else 
+        #   #don't do anything - this preserves the filter
+        # end
+      end
     end
 
     @movies = @movies.order(@sort)
