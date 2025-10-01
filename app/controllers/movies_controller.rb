@@ -54,7 +54,8 @@ class MoviesController < ApplicationController
       session[:sort_by] = @sort
     else 
       @sort = params[:sort_by]
-      session[:sort_by] = @sort
+      #unnecessary
+      # session[:sort_by] = @sort 
       # else 
       #   #don't do anything - this preserves the filter
       # end
@@ -62,8 +63,8 @@ class MoviesController < ApplicationController
 
     @movies = @movies.order(@sort)
     #log the ratings and sort_by for next time
-    # session[:ratings] = params[:ratings]
-    # session[:sort_by] = params[:sort_by]
+    session[:ratings] = params[:ratings] if params[:ratings]
+    session[:sort_by] = params[:sort_by] if params[:sort_by]
     
   end
 
