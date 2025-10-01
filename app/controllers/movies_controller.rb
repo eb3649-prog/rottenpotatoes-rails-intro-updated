@@ -42,6 +42,7 @@ class MoviesController < ApplicationController
       else
         #if no checkboxes, then show everything
         @ratings_to_show = @all_ratings
+        session[:ratings] = @ratings_to_show
       end
     end 
 
@@ -61,8 +62,8 @@ class MoviesController < ApplicationController
 
     @movies = @movies.order(@sort)
     #log the ratings and sort_by for next time
-    session[:ratings] = params[:ratings]
-    session[:sort_by] = params[:sort_by]
+    # session[:ratings] = params[:ratings]
+    # session[:sort_by] = params[:sort_by]
     
   end
 
