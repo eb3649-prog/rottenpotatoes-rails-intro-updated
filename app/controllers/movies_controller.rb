@@ -26,10 +26,16 @@ class MoviesController < ApplicationController
     #   @ratings_to_show.append('R')
     # end
 
-    if params[:ratings].nil? && params[:sort_by].nil?
-      # puts "there are no params"
-      session.clear
-    end
+    #this is bad - it's clearing everything unnecessarily
+    # if params[:ratings].nil? && params[:sort_by].nil?
+    #   # puts "there are no params"
+    #   session.clear
+    # end
+    # unless session[:refreshed]
+    #   session[:refreshed] = true
+    #   session.delete(:ratings)
+    #   session.delete(:sort_by)
+    # end
 
     #save the action for the very end
     if params[:ratings]
@@ -40,8 +46,7 @@ class MoviesController < ApplicationController
         @ratings_to_show = @all_ratings
         session[:ratings] = @ratings_to_show
       elsif session[:ratings]
-        @ratings_to_show = session[:ratings].keys
-        session[:ratings] = @ratings_to_show
+        @ratings_to_show = session[:ratings]
       else
         #if no checkboxes, then show everything
         @ratings_to_show = @all_ratings
@@ -49,7 +54,7 @@ class MoviesController < ApplicationController
       end
     end 
 
-    @movies = Movie.where(rating: @ratings_to_show)
+    
 
     if params[:sort_by]
       @sort = params[:sort_by]
@@ -66,10 +71,11 @@ class MoviesController < ApplicationController
       end
     end
 
+    @movies = Movie.where(rating: @ratings_to_show)
     @movies = @movies.order(@sort)
     #log the ratings and sort_by for next time
-    session[:ratings] = params[:ratings] if params[:ratings]
-    session[:sort_by] = params[:sort_by] if params[:sort_by]
+    # session[:ratings] = params[:ratings] if params[:ratings]
+    # session[:sort_by] = params[:sort_by] if params[:sort_by]
     
   end
 
