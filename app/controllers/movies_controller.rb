@@ -36,7 +36,10 @@ class MoviesController < ApplicationController
       @ratings_to_show = params[:ratings].keys
       session[:ratings] = @ratings_to_show
     else 
-      if session[:ratings]
+      if params[:commit]
+        @ratings_to_show = @all_ratings
+        session[:ratings] = @ratings_to_show
+      elsif session[:ratings]
         @ratings_to_show = session[:ratings].keys
         session[:ratings] = @ratings_to_show
       else
