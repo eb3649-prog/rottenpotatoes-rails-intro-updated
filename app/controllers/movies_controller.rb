@@ -9,33 +9,15 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-
-    # puts "test"
-    # puts params[:ratings]
     @ratings_to_show = []
-    # if params[:ratings]['G']
-    #   @ratings_to_show.append('G')
-    # end
-    # if params[:ratings]['PG']
-    #   @ratings_to_show.append('PG')
-    # end
-    # if params[:ratings]['PG-13']
-    #   @ratings_to_show.append('PG-13')
-    # end
-    # if params[:ratings]['R']
-    #   @ratings_to_show.append('R')
-    # end
 
-    #this is bad - it's clearing everything unnecessarily
-    # if params[:ratings].nil? && params[:sort_by].nil?
-    #   # puts "there are no params"
-    #   session.clear
-    # end
-    # unless session[:refreshed]
-    #   session[:refreshed] = true
-    #   session.delete(:ratings)
-    #   session.delete(:sort_by)
-    # end
+    if params[:ratings].nil? && params[:sort_by].nil? 
+      flash.keep
+      redirect_to movies_path(
+        sort_by: session[:sort_by],
+        ratings: Hash[session[:ratings].map{ |r| [r,1] }]
+      ) and return 
+    end
 
     #save the action for the very end
     if params[:ratings]
@@ -58,25 +40,13 @@ class MoviesController < ApplicationController
 
     if params[:sort_by]
       @sort = params[:sort_by]
-      # immediately update, don't wait until refresh
       session[:sort_by] = @sort
     else 
-      @sort = session[:sort_by] if session[:sort_by]
-      # if session[:sort_by]
-      #   @sort = session[:sort_by]
-      #   #unnecessary
-      #   # session[:sort_by] = @sort 
-      #   # else 
-      #   #   #don't do anything - this preserves the filter
-      #   # end
-      # end
+      @sort = session[:sort_by]
     end
 
     @movies = Movie.where(rating: @ratings_to_show)
     @movies = @movies.order(@sort)
-    #log the ratings and sort_by for next time
-    # session[:ratings] = params[:ratings] if params[:ratings]
-    # session[:sort_by] = params[:sort_by] if params[:sort_by]
     
   end
 
