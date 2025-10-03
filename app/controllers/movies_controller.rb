@@ -61,14 +61,15 @@ class MoviesController < ApplicationController
       # immediately update, don't wait until refresh
       session[:sort_by] = @sort
     else 
-      if session[:sort_by]
-        @sort = session[:sort_by]
-        #unnecessary
-        # session[:sort_by] = @sort 
-        # else 
-        #   #don't do anything - this preserves the filter
-        # end
-      end
+      @sort = session[:sort_by] if session[:sort_by]
+      # if session[:sort_by]
+      #   @sort = session[:sort_by]
+      #   #unnecessary
+      #   # session[:sort_by] = @sort 
+      #   # else 
+      #   #   #don't do anything - this preserves the filter
+      #   # end
+      # end
     end
 
     @movies = Movie.where(rating: @ratings_to_show)
